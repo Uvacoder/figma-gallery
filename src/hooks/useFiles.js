@@ -11,7 +11,12 @@ export function useFiles() {
     setFiles((files) => [...files, fileData])
   }
 
-  const removeFile = (id) => {}
+  const removeFile = (id, node) => {
+    setFiles((files) =>
+      files.filter((file) => !(file.id === id && file.node === node))
+    )
+    console.log(files, 'del')
+  }
 
   return { files, addFile, removeFile }
 }
