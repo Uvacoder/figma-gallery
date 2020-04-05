@@ -68,6 +68,7 @@ function Files(props) {
 
 function File({ id, node }) {
   const [token] = useLocalStorage(figmaTokenKey, null)
+  const { removeFile } = useFiles(filesKey, null)
   const [data, setData] = useState(null)
   const [image, setImage] = useState(null)
   useEffect(() => {
@@ -107,11 +108,16 @@ function File({ id, node }) {
 
   if (!data) return <p>{id}</p>
 
-  const { thumbnailUrl, name } = data
+  const { thumbnailUrl, name, nodes } = data
   const thumb = image ? image : thumbnailUrl
+  const nodeName = nodes?.[node]?.document?.name
+  const bg = nodes?.[node]?.document?.backgroundColor
+  const background = bg
+    ? `rgba(${bg.r * 256}, ${bg.g * 256}, ${bg.b * 256}, ${bg.a})`
+    : '#fff'
   return (
     <div
-      style={{ maxWidth: 320, padding: 24 }}
+      style={{ maxWidth: 320, padding: 24, position: 'relative' }}
       onClick={() => console.log(data)}
     >
       <img
@@ -119,11 +125,13 @@ function File({ id, node }) {
         style={{
           width: '100%',
           border: '1px solid rgba(0,0,0,.1)',
-          borderRadius: 16,
+          borderRadius: 8,
           padding: 8,
+          background,
         }}
       />
-      <p>{name}</p>
+      <p>{nodeName ? `${nodeName} (${name})` : name}</p>
+      <button onClick={() => removeFile(id, node)}>del</button>
     </div>
   )
 }
